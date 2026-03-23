@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maktab Oshxona-menyusi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1> Oshxona <span>Menyusi</span></h1>
+            </div>
+            <nav class="nav-links">
+                <a href="#menu" class="active">Menyu</a>
+                <a href="#inventory">Inventar</a>
+                <a href="#contact">Aloqa</a>
+            </nav>
+            <div id="authSection" class="auth-buttons">
+                <button class="auth-btn login-btn" onclick="showModal('login')"><i class="fas fa-sign-in-alt"></i> Kirish</button>
+                <button class="auth-btn register-btn" onclick="showModal('register')"><i class="fas fa-user-plus"></i> Ro'yxatdan o'tish</button>
+            </div>
+            <div id="userSection" class="user-info" style="display: none;">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <span class="user-name" id="userName">Foydalanuvchi</span>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Chiqish</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="hideModal('login')">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-sign-in-alt"></i>
+                <h2>Kirish</h2>
+                <p>Hisobingizga kiring</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Emailingiz" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Parol</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Parolingiz" required>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Meni eslab qol</label>
+                </div>
+                <button type="submit" class="modal-btn">
+                    <i class="fas fa-arrow-right"></i> Kirish
+                </button>
+            </form>
+            <div class="modal-footer">
+                Hisobingiz yo'qmi? <span onclick="switchToRegister()">Ro'yxatdan o'tish</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="hideModal('register')">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>Ro'yxatdan o'tish</h2>
+                <p>Yangi hisob yarating</p>
+            </div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Ism Familiya</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="regName" placeholder="To'liq ismingiz" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="regEmail" placeholder="Emailingiz" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Parol</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regPassword" placeholder="Parol" onkeyup="checkPasswordStrength()" required>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">Parol kuchliligini tekshiring</div>
+                </div>
+                <div class="form-group">
+                    <label>Parolni tasdiqlang</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regConfirmPassword" placeholder="Parolni qayta kiriting" required>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">Foydalanish shartlariga roziman</label>
+                </div>
+                <button type="submit" class="modal-btn">
+                    <i class="fas fa-check"></i> Ro'yxatdan o'tish
+                </button>
+            </form>
+            <div class="modal-footer">
+                Hisobingiz bormi? <span onclick="switchToLogin()">Kirish</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>1 Haftalik Ovqatlanish Rejasi</h2>
+            <p>Har kuni yangi va mazali taomlar. Barcha ovqatlar professional oshpazlar tomonidan tayyorlanadi va fotosuratlari bilan taqdim etiladi.</p>
+
+            <div class="week-selector">
+                <button class="day-btn active" data-day="monday">Dushanba</button>
+                <button class="day-btn" data-day="tuesday">Seshanba</button>
+                <button class="day-btn" data-day="wednesday">Chorshanba</button>
+                <button class="day-btn" data-day="thursday">Payshanba</button>
+                <button class="day-btn" data-day="friday">Juma</button>
+                <button class="day-btn" data-day="saturday">Shanba</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="menu-section">
+        <div class="container">
+            <h2 class="section-title">Haftalik Menyu</h2>
+
+            <!-- Monday Menu -->
+            <div class="menu-day active" id="monday-menu">
+                <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem;">Dushanba Kunlik Menyusi</h3>
+                <div class="meals-container">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://zamin.uz/uploads/posts/2024-03/2b937f3fd9_2-lyqgt-6t.webp" alt="Nonushta">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Ertalabki Nonushta</h4>
+                                <span class="meal-calories">450 kcal</span>
+                            </div>
+                            <p class="meal-description">Tuxum, qazi, qaymoq, pomidor va yangi non bilan to'liq nonushta.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Tuxum</span>
+                                <span class="ingredient-tag">Qazi</span>
+                                <span class="ingredient-tag">Pomidor</span>
+                                <span class="ingredient-tag">Qaymoq</span>
+                                <span class="ingredient-tag">Non</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>08:00 - 10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://thumbs.dreamstime.com/b/homemade-mastava-spicy-soup-lamb-rice-vegetables-close-up-bowl-served-flat-bread-horizontal-wooden-tray-247338587.jpg" alt="Tushlik">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Mastava va Salad</h4>
+                                <span class="meal-calories">620 kcal</span>
+                            </div>
+                            <p class="meal-description">Go'shtli mastava, achchiq-chuchuk salat va issiq non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Qo'y go'shti</span>
+                                <span class="ingredient-tag">Guruch</span>
+                                <span class="ingredient-tag">Sabzi</span>
+                                <span class="ingredient-tag">Kartoshka</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>13:00 - 15:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://sadaalomma.com/wp-content/uploads/2022/12/%D9%82%D9%84%D9%8A-%D8%A7%D9%84%D8%B3%D9%85%D9%83-%D9%81%D9%8A-%D8%A7%D9%84%D9%85%D9%86%D8%A7%D9%85.jpg" alt="Kechki ovqat">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Qovurilgan Baliq</h4>
+                                <span class="meal-calories">520 kcal</span>
+                            </div>
+                            <p class="meal-description">Qovurilgan laqqa balig'i, qaynatilgan kartoshka va yangi sabzavotlar.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Laqqa balig'i</span>
+                                <span class="ingredient-tag">Kartoshka</span>
+                                <span class="ingredient-tag">Limon</span>
+                                <span class="ingredient-tag">Dill</span>
+                                <span class="ingredient-tag">Sabzavotlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>19:00 - 21:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tuesday Menu (hidden by default) -->
+            <div class="menu-day" id="tuesday-menu">
+                <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem;">Seshanba Kunlik Menyusi</h3>
+                <div class="meals-container">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://media.istockphoto.com/id/511867551/photo/slice-of-cake-with-afternoon-tea.jpg?s=612x612&w=0&k=20&c=0yk1Xn52WcfS7zMyjDieoVers41EaoouIeijmUUWWzQ=" alt="Nonushta">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Sutli Choy va Qaymoq</h4>
+                                <span class="meal-calories">380 kcal</span>
+                            </div>
+                            <p class="meal-description">Issiq sutli choy, qaymoq, murabbo va yangi pishirilgan non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Sut</span>
+                                <span class="ingredient-tag">Qaymoq</span>
+                                <span class="ingredient-tag">Murabbo</span>
+                                <span class="ingredient-tag">Non</span>
+                                <span class="ingredient-tag">Choy</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>08:00 - 10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeZs-TqiGj317200Edx2Vc-A1qIz1PiU5Zg_iJRS2oY8ZSlp1eiSTzJviBhgx-DtzruOE&usqp=CAU" alt="Tushlik">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Osh</h4>
+                                <span class="meal-calories">750 kcal</span>
+                            </div>
+                            <p class="meal-description">An'anaviy osh, achchiq-chuchuk salat va issiq non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Qo'y go'shti</span>
+                                <span class="ingredient-tag">Guruch</span>
+                                <span class="ingredient-tag">Sabzi</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                                <span class="ingredient-tag">Zira</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>13:00 - 15:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Kechki ovqat">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Sabzavotli Kebab</h4>
+                                <span class="meal-calories">480 kcal</span>
+                            </div>
+                            <p class="meal-description">Sabzavotlar bilan to'ldirilgan kabob, yangi salat va non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Mol go'shti</span>
+                                <span class="ingredient-tag">Sabzavotlar</span>
+                                <span class="ingredient-tag">Salat barglari</span>
+                                <span class="ingredient-tag">Non</span>
+                                <span class="ingredient-tag">Ziravorlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>19:00 - 21:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wednesday Menu -->
+            <div class="menu-day" id="wednesday-menu">
+                <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem;">Chorshanba Kunlik Menyusi</h3>
+                <div class="meals-container">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://toping.uz/storage/articles/9794/ZDiM8HTBJDDGeUSNJSiyLthfQWVsUd74.webp" alt="Nonushta">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Omlet va Kolbasa</h4>
+                                <span class="meal-calories">420 kcal</span>
+                            </div>
+                            <p class="meal-description">Pishloqli omlet, qovurilgan kolbasa, pomidor va yangi non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Tuxum</span>
+                                <span class="ingredient-tag">Kolbasa</span>
+                                <span class="ingredient-tag">Pishloq</span>
+                                <span class="ingredient-tag">Pomidor</span>
+                                <span class="ingredient-tag">Non</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>08:00 - 10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Qzmg2-hg8u8sNE-UvyJ1LGwWWBUj9huBpw&s" alt="Tushlik">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Moshxo'rda</h4>
+                                <span class="meal-calories">580 kcal</span>
+                            </div>
+                            <p class="meal-description">Moshli moshxo'rda, qazi, qovurilgan piyoz va issiq non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Mosh</span>
+                                <span class="ingredient-tag">Qo'y go'shti</span>
+                                <span class="ingredient-tag">Sabzi</span>
+                                <span class="ingredient-tag">Kartoshka</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>13:00 - 15:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://i.ytimg.com/vi/NUZeMB8T0PU/maxresdefault.jpg" alt="Kechki ovqat">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Qozon Kabob</h4>
+                                <span class="meal-calories">610 kcal</span>
+                            </div>
+                            <p class="meal-description">Qozonda pishirilgan kabob, kartoshka va sabzavotlar bilan.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Mol go'shti</span>
+                                <span class="ingredient-tag">Kartoshka</span>
+                                <span class="ingredient-tag">Sabzi</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                                <span class="ingredient-tag">Ziravorlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>19:00 - 21:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thursday Menu -->
+            <div class="menu-day" id="thursday-menu">
+                <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem;">Payshanba Kunlik Menyusi</h3>
+                <div class="meals-container">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE0Ob33dmbPyW3XR3G8uaRU06urPxi-2zm-FvXhHJaIAd4GfyWECP-f7zvWLkZOcNFJS4&usqp=CAU" alt="Nonushta">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Quymoq va Asal</h4>
+                                <span class="meal-calories">390 kcal</span>
+                            </div>
+                            <p class="meal-description">Issiq quymoq, asal, yong'oq va yangi pishirilgan non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Quymoq</span>
+                                <span class="ingredient-tag">Asal</span>
+                                <span class="ingredient-tag">Yong'oq</span>
+                                <span class="ingredient-tag">Non</span>
+                                <span class="ingredient-tag">Sut</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>08:00 - 10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWgEuyW_f8d-VnQqgdz17DEwuBddIrT8XjfQ&s" alt="Tushlik">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Chuchvara</h4>
+                                <span class="meal-calories">680 kcal</span>
+                            </div>
+                            <p class="meal-description">Go'shtli chuchvara, smetana, sarimsoq va yangi ko'katlar.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Xamir</span>
+                                <span class="ingredient-tag">Maydalangan go'sht</span>
+                                <span class="ingredient-tag">Smetana</span>
+                                <span class="ingredient-tag">Sarimsoq</span>
+                                <span class="ingredient-tag">Ko'katlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>13:00 - 15:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2oJjxm7SrAHP112gHcB5RJkLYom4AgzLlzg&s" alt="Kechki ovqat">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Somsa</h4>
+                                <span class="meal-calories">530 kcal</span>
+                            </div>
+                            <p class="meal-description">Tandirda pishirilgan somsa, achchiq-chuchuk salat va choy.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Xamir</span>
+                                <span class="ingredient-tag">Maydalangan go'sht</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                                <span class="ingredient-tag">Zira</span>
+                                <span class="ingredient-tag">Kunjut</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>19:00 - 21:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friday Menu -->
+            <div class="menu-day" id="friday-menu">
+                <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem;">Juma Kunlik Menyusi</h3>
+                <div class="meals-container">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://static.xabar.uz/crop/2/4/720_460_95_2403236194.jpg" alt="Nonushta">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Tuxum Qovurma</h4>
+                                <span class="meal-calories">410 kcal</span>
+                            </div>
+                            <p class="meal-description">Pomidor va piyoz bilan qovurilgan tuxum, qazi va yangi non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Tuxum</span>
+                                <span class="ingredient-tag">Pomidor</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                                <span class="ingredient-tag">Qazi</span>
+                                <span class="ingredient-tag">Non</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>08:00 - 10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDKJ1y97QbqDu6EYf568cIC7KjsiDi9dFHKQ&s" alt="Tushlik">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Lag'mon</h4>
+                                <span class="meal-calories">720 kcal</span>
+                            </div>
+                            <p class="meal-description">An'anaviy lag'mon, yangi sabzavotlar va ko'katlar bilan.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Xamir</span>
+                                <span class="ingredient-tag">Mol go'shti</span>
+                                <span class="ingredient-tag">Sabzavotlar</span>
+                                <span class="ingredient-tag">Ko'katlar</span>
+                                <span class="ingredient-tag">Ziravorlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>13:00 - 15:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://avatars.mds.yandex.net/get-altay/228191/2a000001861841984d376a1f276e4ec30645/XL" alt="Kechki ovqat">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Qovurma Shashlik</h4>
+                                <span class="meal-calories">590 kcal</span>
+                            </div>
+                            <p class="meal-description">Mangalda pishirilgan shashlik, pomidor va piyoz salati.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Mol go'shti</span>
+                                <span class="ingredient-tag">Pomidor</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                                <span class="ingredient-tag">Ziravorlar</span>
+                                <span class="ingredient-tag">Ko'katlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>19:00 - 21:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saturday Menu -->
+            <div class="menu-day" id="saturday-menu">
+                <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary-color); font-size: 1.5rem;">Shanba Kunlik Menyusi</h3>
+                <div class="meals-container">
+                    <!-- Breakfast -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://zira.uz/wp-content/uploads/2020/01/risovaya-kasha-s-kuragoi---i-izyumom-2.jpg" alt="Nonushta">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Sutli Bo'tqa</h4>
+                                <span class="meal-calories">350 kcal</span>
+                            </div>
+                            <p class="meal-description">Sutli guruch bo'tqasi, qaymoq, asal va yangi pishirilgan non.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Guruch</span>
+                                <span class="ingredient-tag">Sut</span>
+                                <span class="ingredient-tag">Qaymoq</span>
+                                <span class="ingredient-tag">Asal</span>
+                                <span class="ingredient-tag">Non</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>08:00 - 10:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSx_f4JOwH1eQ38Qrf2jUi21ZjdXtjLQaPIw&s" alt="Tushlik">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Norin</h4>
+                                <span class="meal-calories">690 kcal</span>
+                            </div>
+                            <p class="meal-description">An'anaviy norin, qazi, xamir va maxsus ziravorlar bilan.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Xamir</span>
+                                <span class="ingredient-tag">Qazi</span>
+                                <span class="ingredient-tag">Piyoz</span>
+                                <span class="ingredient-tag">Ziravorlar</span>
+                                <span class="ingredient-tag">Ko'katlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>13:00 - 15:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-card">
+                        <div class="meal-img">
+                            <img src="https://zira.uz/wp-content/uploads/2020/03/sahovat-kurica-5.jpg" alt="Kechki ovqat">
+                        </div>
+                        <div class="meal-info">
+                            <div class="meal-title">
+                                <h4 class="meal-name">Tovuq Kabob</h4>
+                                <span class="meal-calories">480 kcal</span>
+                            </div>
+                            <p class="meal-description">Tovuq go'shtidan kabob, yangi salat va non bilan.</p>
+                            <div class="meal-ingredients">
+                                <span class="ingredient-tag">Tovuq go'shti</span>
+                                <span class="ingredient-tag">Sabzavotlar</span>
+                                <span class="ingredient-tag">Salat barglari</span>
+                                <span class="ingredient-tag">Non</span>
+                                <span class="ingredient-tag">Ziravorlar</span>
+                            </div>
+                            <div class="meal-time">
+                                <i class="far fa-clock"></i>
+                                <span>19:00 - 21:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inventory Section -->
+    <section id="inventory" class="inventory-section">
+        <div class="container">
+            <h2 class="section-title">Ovqatlar Inventori</h2>
+
+            <div class="inventory-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Ovqat nomi bo'yicha qidirish...">
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Barchasi</button>
+                    <button class="filter-btn" data-filter="breakfast">Nonushta</button>
+                    <button class="filter-btn" data-filter="lunch">Tushlik</button>
+                    <button class="filter-btn" data-filter="dinner">Kechki ovqat</button>
+                </div>
+            </div>
+
+            <div class="inventory-grid" id="inventory-grid">
+                <!-- Inventory items will be generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Oshxona Menyusi</h3>
+                    <p>Biz 1 haftalik to'liq ovqatlanish rejasini taklif etamiz. Har kuni yangi va mazali taomlar.</p>
+                    <div style="margin-top: 15px;">
+                        <i class="fas fa-star" style="color: gold; margin-right: 5px;"></i>
+                        <i class="fas fa-star" style="color: gold; margin-right: 5px;"></i>
+                        <i class="fas fa-star" style="color: gold; margin-right: 5px;"></i>
+                        <i class="fas fa-star" style="color: gold; margin-right: 5px;"></i>
+                        <i class="fas fa-star-half-alt" style="color: gold;"></i>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Tez Havolalar</h3>
+                    <ul>
+                        <li><a href="#menu">Haftalik Menyu</a></li>
+                        <li><a href="#inventory">Inventar</a></li>
+                        <li><a href="#contact">Aloqa</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Aloqa Ma'lumotlari</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> Xiva sh. Shodlik. t</li>
+                        <li><i class="fas fa-phone" style="margin-right: 10px;"></i> +998 90 123 45 67</li>
+                        <li><i class="fas fa-envelope" style="margin-right: 10px;"></i> Menu@gmail.com</li>
+                        <li><i class="fas fa-clock" style="margin-right: 10px;"></i> Dushanba - Shanba: 08:00-21:00</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2023 Katta Roq Oshxona. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
